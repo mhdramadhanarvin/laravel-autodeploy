@@ -31,7 +31,7 @@ module "ec2_instance" {
 
   instance_name     = "laravel-autodeploy-server"
   instance_type     = "t3.medium"
-  ansible_script    = "ansible/server.yml"
+  ansible_script    = "../ansible/server.yml"
   security_group_id = module.security_group.sg_id
 
   private_key_path = var.private_key_path

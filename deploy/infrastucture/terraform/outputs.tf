@@ -38,8 +38,7 @@ output "public-ip" {
 }
 
 output "ansible-to-server" {
-  value = {
-    ansible-to-server = join(
+  value = join(
       "",
       [
         "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ",
@@ -48,6 +47,5 @@ output "ansible-to-server" {
         " --private-key ${var.private_key_path} ",
         "${module.ec2_instance.ansible_script} "
       ]
-    ),
-  }
+    )
 }

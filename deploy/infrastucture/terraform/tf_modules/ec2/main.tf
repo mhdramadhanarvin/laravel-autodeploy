@@ -26,10 +26,9 @@ resource "aws_instance" "server" {
     }
   }
 
-  provisioner "local-exec" {
-    # Run this after remote-exec success
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u ${var.ssh_user} -i ${aws_instance.server.public_dns}, --private-key ${var.private_key_path} ${var.ansible_script}"
-  }
-
+  # provisioner "local-exec" {
+  #   # Run this after remote-exec success
+  #   command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -u ${var.ssh_user} -i ${aws_instance.server.public_dns}, --private-key ${var.private_key_path} ${var.ansible_script}"
+  # }
 }
 
