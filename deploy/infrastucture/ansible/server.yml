@@ -1,0 +1,5 @@
+- hosts: all
+  become: true
+  roles:
+    - { role: init-tasks, tags: ['init-task'] }
+    - { role: docker, tags: ['docker'] }

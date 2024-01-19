@@ -1,0 +1,61 @@
+---
+# Set timezone
+- name: Set timezone to {{ timezone }}
+  community.general.timezone:
+    name: '{{ timezone }}'
+
+- name: 'Update apt'
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: 'Install common utils'
+  ansible.builtin.apt:
+    name:
+      - wget
+      - curl
+      - git
+      - make
+      - build-essential
+      - ufw
+      - fail2ban
+      - sshguard
+    state: latest
+
+# Create docker group
+- name: Create docker group
+  ansible.builtin.group:
+    name: docker
+    state: present
+
+# Create non-root user
+- name: "Add user '{{ username }}' and add them to sudoer and docker"
+  ansible.builtin.user:
+    name: '{{ username }}'
+    groups: 'sudo, docker'
+
+# Add access security
+## SSH task reference: https://github.com/vitalk/ansible-secure-ssh
+- name: "Add SSH key to '{{ username }}'"
+  authorized_key:
+    user: '{{ username }}'
+    state: present
+    key: "{{ lookup('file', pub_key) }}"
+  register: add_identity_key
+  when: pub_key is defined and username is defined
+
+# Add firewall
+# Defaults in defaults/main.yml
+- name: Set ufw firewall rules
+  community.general.ufw:
+    rule: '{{ item.rule }}'
+    port: '{{ item.port }}'
+    proto: '{{ item.proto }}'
+  loop: '{{ ufw_rules }}'
+
+- name: Install acl
+  apt:
+    state: latest
+    update_cache: true
+    pkg:
+      - acl

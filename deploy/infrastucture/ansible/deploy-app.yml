@@ -1,0 +1,7 @@
+---
+- hosts: all
+  become: true
+  vars: # TODO: to vars, or not to vars -DevOpShakespeare
+    - username: laravel_autodeploy
+  roles:
+    - { role: deploy-app, tag: ['app'] }

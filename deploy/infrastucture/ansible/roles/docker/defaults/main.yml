@@ -1,0 +1,3 @@
+docker_user: ["ubuntu"]
+github_username: "{{ lookup('env', 'GITHUB_USERNAME') }}"
+github_personal_token: "{{ lookup('env', 'GITHUB_PERSONAL_TOKEN') }}"

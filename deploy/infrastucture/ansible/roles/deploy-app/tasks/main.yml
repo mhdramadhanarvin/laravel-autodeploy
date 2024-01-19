@@ -1,0 +1,41 @@
+- name: 'Sync env file'
+  ansible.builtin.copy:
+    src: ../../../.env
+    dest: '/home/{{ username }}/.env'
+    owner: '{{ username }}'
+    group: '{{ username }}'
+    # mode: '0644'
+
+- name: 'Sync stack file'
+  ansible.builtin.copy:
+    src: ../../../docker-compose.yml
+    dest: '/home/{{ username }}/docker-compose.yml'
+    owner: '{{ username }}'
+    group: '{{ username }}'
+    mode: '0644'
+
+- name: 'Get env data'
+  ansible.builtin.shell:
+    cmd: export $(grep -v '^#' .env | xargs)
+    chdir: '/home/{{ username }}'
+
+- name: 'Pull latest image'
+  ansible.builtin.shell:
+    cmd: 'docker compose -f docker-compose.yml pull'
+    chdir: '/home/{{ username }}'
+
+- name: 'Run swarm init'
+  ansible.builtin.shell:
+    cmd: docker swarm init --force-new-cluster
+    chdir: '/home/{{ username }}/'
+  run_once: true
+
+- name: Run stack
+  become: true
+  become_user: '{{ username }}'
+  ansible.builtin.shell:
+    cmd: |
+      export $(grep -v '^#' .env | xargs)
+      docker stack deploy -c docker-compose.yml laravel-autodeploy --with-registry-auth
+    # cmd: pwd
+    chdir: '/home/{{ username }}/'

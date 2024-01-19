@@ -1,0 +1,81 @@
+# Reference:
+# https://www.digitalocean.com/community/tutorials/how-to-use-ansible-to-install-and-set-up-docker-on-ubuntu-20-04
+# https://github.com/geerlingguy/ansible-role-docker/blob/master/tasks/main.yml
+# https://docs.docker.com/engine/install/linux-postinstall/
+# https://docs.docker.com/engine/install/debian/
+
+- name: Update and install required system packages
+  ansible.builtin.apt:
+    package:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+      - python3-pip
+      - virtualenv
+      - python3-setuptools
+    update_cache: true
+
+- name: Uninstall old docker packages
+  ansible.builtin.apt:
+    package:
+      - docker
+      - docker-engine
+      - docker.io
+      - containerd
+      - runc
+    state: absent
+
+- name: Add Docker GPG apt Key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker Repository
+  ansible.builtin.apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release}} stable
+    state: present
+
+- name: Update apt and install docker related package
+  ansible.builtin.apt:
+    package:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+    state: present
+    update_cache: true
+
+- name: Ensure docker service started
+  ansible.builtin.service:
+    name: docker
+    state: started
+
+- name: Install Docker Module for Python
+  ansible.builtin.pip:
+    name:
+      - 'docker'
+      - 'docker-compose'
+
+- name: Add user "{{ username }}" to docker group
+  ansible.builtin.user:
+    name: '{{item}}'
+    groups: docker
+    append: true
+  with_items: '{{ username }}'
+  when: docker_user is defined and (docker_user|length>0)
+
+- name: Restart ssh
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+  when: docker_user is defined and (docker_user|length>0)
+
+- name: Log into github registry
+  docker_login:
+    registry: ghcr.io
+    username: '{{ github_username }}'
+    password: '{{ github_personal_token }}'
+    reauthorize: yes
+  become: true
+  become_user: '{{ username }}'

@@ -1,0 +1,8 @@
+timezone: Asia/Jakarta
+username: laravel_autodeploy
+pub_key: '~/.ssh/laravel-autodeploy.pub'
+ufw_rules:
+  # TODO Do we need to change ssh port? Actually, we should!
+  - { name: ssh, rule: allow, port: '22', proto: tcp }
+  - { name: https, rule: allow, port: '443', proto: tcp }
+  - { name: http, rule: allow, port: '80', proto: tcp }

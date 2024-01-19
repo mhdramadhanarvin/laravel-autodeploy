@@ -1,0 +1,3 @@
+username: laravel_autodeploy
+timezone: Asia/Jakarta
+pub_key: '~/.ssh/laravel-autodeploy.pub'
