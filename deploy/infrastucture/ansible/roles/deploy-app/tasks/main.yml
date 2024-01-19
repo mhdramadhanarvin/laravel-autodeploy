@@ -23,6 +23,8 @@
   ansible.builtin.shell:
     cmd: 'docker compose -f docker-compose.yml pull'
     chdir: '/home/{{ username }}'
+  become: true
+  become_user: '{{ username }}'
 
 - name: 'Run swarm init'
   ansible.builtin.shell:
