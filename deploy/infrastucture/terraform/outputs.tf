@@ -1,5 +1,5 @@
 ###################
-# Input 
+# Input
 ###################
 
 variable "region" {
@@ -26,7 +26,7 @@ variable "private_key_path" {
 }
 
 ###################
-# Output 
+# Output
 ###################
 
 output "public-dns" {
@@ -44,7 +44,7 @@ output "ansible-to-server" {
         "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ",
         "-u ${module.ec2_instance.ssh_user} ",
         "-i ${module.ec2_instance.public_dns}, ",
-        " --private-key ${var.private_key_path} ",
+        "--private-key ${var.private_key_path} ",
         "${module.ec2_instance.ansible_script} "
       ]
     )
