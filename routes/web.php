@@ -14,5 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $version = env('VERSION', '1.0.0');
+    return view('welcome', compact('version'));
 });

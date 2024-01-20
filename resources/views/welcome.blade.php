@@ -24,7 +24,7 @@
 
                 <div class="flex justify-center mt-16 px-0">
                     <div class="text-center text-4xl text-gray-500 dark:text-gray-400 sm:ml-0">
-                        Laravel AutoDeploy v1.0.0
+                        Laravel AutoDeploy v{{ $version }}
                     </div>
                 </div>
 
