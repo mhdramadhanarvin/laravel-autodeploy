@@ -32,4 +32,4 @@ jobs:
           context: .
           file: deploy/docker/php-apache/Dockerfile
           push: true
-          tags: ${{ GITHUB_REPOSITORY }}:${{ steps.tag.outputs.tag }}
+          tags: ${{ vars.GITHUB_REPOSITORY }}:${{ steps.tag.outputs.tag }}
