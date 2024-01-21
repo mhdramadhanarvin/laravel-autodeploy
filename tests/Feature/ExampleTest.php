@@ -16,4 +16,11 @@ class ExampleTest extends TestCase
 
         $response->assertOk();
     }
+
+    public function test_the_application_returns_ok(): void
+    {
+        $response = $this->get('/');
+
+        $response->assertOk();
+    }
 }
