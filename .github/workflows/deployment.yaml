@@ -33,5 +33,4 @@ jobs:
           file: deploy/docker/php-apache/Dockerfile
           push: true
           tags:
-            ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }}
-            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ steps.tag.outputs.tag }} , ghcr.io/${{ github.repository }}:latest
