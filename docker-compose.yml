@@ -1,13 +1,28 @@
 version: "3"
 
 services:
-
   app:
     image: ghcr.io/mhdramadhanarvin/laravel-autodeploy:${VERSION}
-    ports:
-      - 80:80
     depends_on:
       - mysql
+    networks:
+        - network
+
+  webserver:
+    image: nginx:alpine-slim
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./deploy/docker/nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - app
+      - mysql
+    networks:
+      - network
 
   mysql:
     image: 'mysql:8.0'
@@ -30,7 +45,12 @@ services:
         - '-p${DB_PASSWORD}'
       retries: 3
       timeout: 5s
+    networks:
+        - network
 
 volumes:
     mysql:
         driver: local
+
+networks:
+  network:
