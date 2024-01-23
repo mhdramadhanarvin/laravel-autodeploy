@@ -6,6 +6,7 @@ on:
 
 jobs:
   tests:
+    name: Job for running test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -34,3 +35,39 @@ jobs:
 
       - name: Run tests
         run: php artisan test
+
+  terraformCheck:
+    name: Job for ensure changes in terraform
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: deploy/infrastructure/terraform
+    steps:
+    - uses: actions/checkout@v3
+    - name: Copy the Public key
+      run: |
+        echo "${{ secrets.PUBLIC_KEY }}" > ~/.ssh/laravel-autodeploy.pub
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: "ap-southeast-3"
+
+    - uses: hashicorp/setup-terraform@v3
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt -check
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan
