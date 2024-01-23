@@ -39,13 +39,13 @@ output "public-ip" {
 
 output "ansible-to-server" {
   value = join(
-      "",
-      [
-        "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ",
-        "-u ${module.ec2_instance.ssh_user} ",
-        "-i ${module.ec2_instance.public_dns}, ",
-        "--private-key ${var.private_key_path} ",
-        "${module.ec2_instance.ansible_script} "
-      ]
-    )
+    "",
+    [
+      "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ",
+      "-u ${module.ec2_instance.ssh_user} ",
+      "-i ${module.ec2_instance.public_dns}, ",
+      "--private-key ${var.private_key_path} ",
+      "${module.ec2_instance.ansible_script} "
+    ]
+  )
 }

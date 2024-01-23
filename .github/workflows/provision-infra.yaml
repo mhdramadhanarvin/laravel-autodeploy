@@ -1,0 +1,36 @@
+name: Provision Infrastructure
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  terraformApply:
+    name: Apply terraform
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: deploy/infrastructure/terraform
+    steps:
+    - uses: actions/checkout@v3
+    - name: Copy the Public key
+      run: |
+        mkdir -p ~/.ssh/
+        echo "${{ secrets.PUBLIC_KEY }}" > ~/.ssh/laravel-autodeploy.pub
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: "ap-southeast-3"
+
+    - uses: hashicorp/setup-terraform@v3
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    - name: Terraform Apply
+      id: apply
+      run: terraform apply --auto-approve
