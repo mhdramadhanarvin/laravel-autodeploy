@@ -5,6 +5,12 @@ terraform {
       version = "~> 4.20"
     }
   }
+
+  backend "s3" {
+    bucket = "laravel-autodeploy-state"
+    key    = "terraform.tfstate"
+    region = "ap-southeast-3"
+  }
 }
 
 provider "aws" {
@@ -21,7 +27,7 @@ module "security_group" {
 module "ec2_keypair" {
   source = "./tf_modules/keypair"
 
-  key_name        = "laravel"
+  key_name        = "laravel-autodeploy"
   public_key_path = var.public_key_path
   common_tags     = local.common_tags
 }
