@@ -17,6 +17,7 @@ jobs:
     - name: Copy the Public key
       run: |
         mkdir -p ~/.ssh/
+        echo "${{ secrets.PRIVATE_KEY }}" > ~/.ssh/laravel-autodeploy
         echo "${{ secrets.PUBLIC_KEY }}" > ~/.ssh/laravel-autodeploy.pub
 
     - name: Configure AWS Credentials
